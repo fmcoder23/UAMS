@@ -1,0 +1,254 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  M
+  F
+}
+
+enum AppType {
+  BACHELORS
+  MASTERS
+}
+
+enum AdminRole {
+  ADMIN
+  ROOT
+}
+
+enum AppStatus {
+  APPLIED
+  ACCEPTED
+  REJECTED
+}
+
+enum PaymentStatus {
+  PAID
+  UNPAID
+}
+
+enum Semester {
+  FALL
+  SPRING
+}
+
+model User {
+  id String @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+
+  fullname String @default("John Doe")
+  email    String
+  password String
+
+  appType  AppType  @default(BACHELORS)
+  appID    String   @default("B000000")
+  semester Semester @default(FALL)
+
+  profile              Profile?
+  family               Family?
+  applications         Application[]
+  favoriteUniversities FavoriteUniversity[]
+  documents            Document[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([id])
+  @@unique([email])
+  @@index([createdAt])
+}
+
+model Profile {
+  id             String   @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  firstName      String
+  middleName     String
+  lastName       String
+  birthDate      DateTime
+  region         String
+  passportNumber String
+  photo          String?
+  city           String
+  address1       String?
+  address2       String?
+  phone          String?
+  gender         Gender
+
+  countryId String  @db.Uuid
+  country   Country @relation(fields: [countryId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  userId String @unique @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([id])
+  @@unique([passportNumber])
+  @@index([phone])
+}
+
+model Family {
+  id                   String    @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  fatherFirstName      String?
+  fatherLastName       String?
+  fatherBirthDate      DateTime?
+  fatherPassportNumber String?
+  fatherPhone          String?
+  fatherOccupation     String?
+  motherFirstName      String?
+  motherLastName       String?
+  motherBirthDate      DateTime?
+  motherPassportNumber String?
+  motherPhone          String?
+  motherOccupation     String?
+
+  userId String @unique @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([id])
+  @@index([fatherPassportNumber])
+  @@index([motherPassportNumber])
+}
+
+model Country {
+  id   String @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name String
+
+  profiles     Profile[]
+  universities University[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([id])
+  @@unique([name])
+}
+
+model University {
+  id               String   @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  photos           String[]
+  name             String
+  longDescription  String
+  shortDescription String
+  address          String
+  websiteUrl       String
+
+  countryId String  @db.Uuid
+  country   Country @relation(fields: [countryId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  programs     Program[]
+  applications Application[]
+  favorites    FavoriteUniversity[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([id])
+  @@unique([name])
+  @@index([name])
+  @@index([countryId])
+}
+
+model Program {
+  id         String @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name       String
+  programFee Int
+
+  universityId String     @db.Uuid
+  university   University @relation(fields: [universityId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  applications Application[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([id])
+  @@index([name])
+  @@index([universityId])
+}
+
+model Admin {
+  id        String    @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  firstName String
+  lastName  String
+  username  String
+  password  String
+  role      AdminRole
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([id])
+  @@unique([username])
+}
+
+model Application {
+  id String @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  universityId String     @db.Uuid
+  university   University @relation(fields: [universityId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  programId String  @db.Uuid
+  program   Program @relation(fields: [programId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  appStatus     AppStatus
+  paymentStatus PaymentStatus
+  paymentDate   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([id])
+  @@index([userId])
+  @@index([universityId])
+  @@index([programId])
+  @@index([universityId, programId])
+  @@index([appStatus])
+}
+
+model Document {
+  id         String @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  transcript String
+  passport   String
+
+  IELTSScore String?
+  TOPIKScore String?
+
+  motherPassport String?
+  fatherPassport String?
+  IELTS          String?
+  TOPIK          String?
+
+  userId String @db.Uuid
+  User   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([id])
+}
+
+model FavoriteUniversity {
+  id String @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  universityId String     @db.Uuid
+  university   University @relation(fields: [universityId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([id])
+}
