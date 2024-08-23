@@ -1,58 +1,67 @@
-import { ApiPropertyOptions } from '@nestjs/swagger'
+import { ApiPropertyOptions } from '@nestjs/swagger';
+import { withBaseResponse } from '../utils/base-response';
+import { applyDecorators } from '@nestjs/common';
 
-import { withBaseResponse } from '../utils/base-response'
+export const RESPONSE_DTO_KEY = 'api_response_dto';
 
-export const RESPONSE_DTO_KEY = 'api_response_dto'
+export interface ResponseDTOOptions extends ApiPropertyOptions {
+  status?: number;
+  description?: string;
+}
 
-export function ResponseDTO(
-  dto: any,
-  options?: ApiPropertyOptions,
+type Constructor<T = any> = new (...args: any[]) => T;
+
+export function ResponseDTO<T extends Constructor>(
+  dto: T,
+  options?: ResponseDTOOptions,
 ): MethodDecorator & ClassDecorator {
-  return (
-    target: object,
-    key?: string | symbol,
-    descriptor?: TypedPropertyDescriptor<any>,
-  ): any => {
-    const swagger_dto = withBaseResponse(dto, options)
+  return applyDecorators(
+    (target: object, key?: string | symbol, descriptor?: TypedPropertyDescriptor<any>) => {
+      const swagger_dto = withBaseResponse(dto, options);
 
-    if (descriptor) {
+      if (descriptor) {
+        Reflect.defineMetadata(
+          'swagger/apiResponse',
+          {
+            default: {
+              type: swagger_dto,
+              status: options?.status || 200,
+              description: options?.description || 'Successful response',
+            },
+          },
+          descriptor.value,
+        );
+        Reflect.defineMetadata(
+          RESPONSE_DTO_KEY,
+          {
+            dto,
+          },
+          descriptor.value,
+        );
+
+        return descriptor;
+      }
+
       Reflect.defineMetadata(
         'swagger/apiResponse',
         {
           default: {
             type: swagger_dto,
+            status: options?.status || 200,
+            description: options?.description || 'Successful response',
           },
         },
-        descriptor.value,
-      )
+        target,
+      );
       Reflect.defineMetadata(
         RESPONSE_DTO_KEY,
         {
           dto,
         },
-        descriptor.value,
-      )
+        target,
+      );
 
-      return descriptor
-    }
-
-    Reflect.defineMetadata(
-      'swagger/apiResponse',
-      {
-        default: {
-          type: swagger_dto,
-        },
-      },
-      target,
-    )
-    Reflect.defineMetadata(
-      RESPONSE_DTO_KEY,
-      {
-        dto,
-      },
-      target,
-    )
-
-    return target
-  }
+      return target;
+    },
+  );
 }

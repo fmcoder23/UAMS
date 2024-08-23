@@ -2,21 +2,43 @@ import {
     BadRequestException,
     ExecutionContext,
     createParamDecorator,
-  } from '@nestjs/common'
+  } from '@nestjs/common';
+  
+  interface PaginationOptions {
+    defaultPage?: number;
+    defaultLimit?: number;
+    maxLimit?: number;
+    pageQueryParam?: string;
+    limitQueryParam?: string;
+  }
   
   export const Pagination = createParamDecorator(
-    (data: unknown, context: ExecutionContext) => {
-      const request = context.switchToHttp().getRequest()
-      const page = parseInt(request.query.page, 10) || 1
+    (options: PaginationOptions = {}, context: ExecutionContext) => {
+      const {
+        defaultPage = 1,
+        defaultLimit = 10,
+        maxLimit = 100,
+        pageQueryParam = 'page',
+        limitQueryParam = 'limit',
+      } = options;
+  
+      const request = context.switchToHttp().getRequest();
+      const query = request.query;
+  
+      const page = parseInt(query[pageQueryParam], 10) || defaultPage;
       if (page <= 0) {
-        throw new BadRequestException('Page must be greater than 0.')
+        throw new BadRequestException(`${pageQueryParam} must be greater than 0.`);
       }
   
-      const limit = parseInt(request.query.limit, 10) || 10
+      let limit = parseInt(query[limitQueryParam], 10) || defaultLimit;
       if (limit <= 0) {
-        throw new BadRequestException('Limit must be greater than 0.')
+        throw new BadRequestException(`${limitQueryParam} must be greater than 0.`);
       }
-      return { page, limit }
+      if (limit > maxLimit) {
+        limit = maxLimit;
+      }
+  
+      return { page, limit };
     },
-  )
+  );
   
