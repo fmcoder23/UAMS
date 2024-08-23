@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AuthModule } from './auth/auth.module';
-import { AdminModule } from './admin/admin.module';
-import { ApplicationModule } from './application/application.module';
-import { DocumentModule } from './document/document.module';
-import { FamilyModule } from './family/family.module';
-import { ProfileModule } from './profile/profile.module';
-import { ProgramModule } from './program/program.module';
-import { UniversityModule } from './university/university.module';
-import { UserModule } from './user/user.module';
+import { AuthModule } from './api/auth/auth.module';
+import { AdminModule } from './api/admin/admin.module';
+import { ApplicationModule } from './api/application/application.module';
+import { DocumentModule } from './api/document/document.module';
+import { FamilyModule } from './api/family/family.module';
+import { ProfileModule } from './api/profile/profile.module';
+import { ProgramModule } from './api/program/program.module';
+import { UniversityModule } from './api/university/university.module';
+import { UserModule } from './api/user/user.module';
 
 @Module({
   imports: [
