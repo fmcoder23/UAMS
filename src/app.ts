@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './api/auth/auth.module';
-import { AdminModule } from './api/admin/admin.module';
 import { ApplicationModule } from './api/application/application.module';
 import { DocumentModule } from './api/document/document.module';
 import { FamilyModule } from './api/family/family.module';
@@ -14,7 +13,6 @@ import { UserModule } from './api/user/user.module';
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     AuthModule,
-    AdminModule,
     ApplicationModule,
     DocumentModule,
     FamilyModule,

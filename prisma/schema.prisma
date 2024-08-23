@@ -17,11 +17,6 @@ enum AppType {
   MASTERS
 }
 
-enum AdminRole {
-  ADMIN
-  ROOT
-}
-
 enum AppStatus {
   APPLIED
   IN_REVIEW
@@ -46,6 +41,12 @@ enum TestType {
   SAT
 }
 
+enum Role {
+  USER
+  ADMIN
+  SUPERADMIN
+}
+
 enum DocumentType {
   PASSPORT
   MOTHER_PASSPORT
@@ -58,6 +59,8 @@ model User {
   fullname String @default("John Doe")
   email    String @unique
   password String
+
+  role Role @default(USER)
 
   appType  AppType  @default(BACHELORS)
   appID    String   @default("B000000")
@@ -92,7 +95,7 @@ model Profile {
   photo             String?
   address1          String?
   address2          String?
-  phone             String? 
+  phone             String?
   gender            Gender
 
   countryId String  @db.Uuid
@@ -222,21 +225,6 @@ model Program {
   @@id([id])
   @@index([name])
   @@index([universityId])
-}
-
-model Admin {
-  id        String    @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  firstName String
-  lastName  String
-  username  String    @unique
-  password  String
-  role      AdminRole
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
-
-  @@id([id])
 }
 
 model Application {
