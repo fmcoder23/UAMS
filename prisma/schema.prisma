@@ -10,8 +10,6 @@ generator client {
 enum Gender {
   MALE
   FEMALE
-  M
-  F
 }
 
 enum AppType {
@@ -26,7 +24,9 @@ enum AdminRole {
 
 enum AppStatus {
   APPLIED
+  IN_REVIEW
   ACCEPTED
+  WAITLISTED
   REJECTED
 }
 
@@ -40,11 +40,23 @@ enum Semester {
   SPRING
 }
 
-model User {
-  id String @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+enum TestType {
+  IELTS
+  TOPIK
+  SAT
+}
 
+enum DocumentType {
+  PASSPORT
+  MOTHER_PASSPORT
+  FATHER_PASSPORT
+  TRANSCRIPT
+}
+
+model User {
+  id       String @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   fullname String @default("John Doe")
-  email    String
+  email    String @unique
   password String
 
   appType  AppType  @default(BACHELORS)
@@ -56,29 +68,32 @@ model User {
   applications         Application[]
   favoriteUniversities FavoriteUniversity[]
   documents            Document[]
+  education            Education?
+  testScores           TestScores[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   @@id([id])
-  @@unique([email])
   @@index([createdAt])
 }
 
 model Profile {
-  id             String   @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  firstName      String
-  middleName     String
-  lastName       String
-  birthDate      DateTime
-  region         String
-  passportNumber String
-  photo          String?
-  city           String
-  address1       String?
-  address2       String?
-  phone          String?
-  gender         Gender
+  id                String   @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  firstName         String
+  middleName        String?
+  lastName          String
+  birthDate         DateTime
+  region            String
+  passportNumber    String   @unique
+  passportGivenDate DateTime
+  passportEndDate   DateTime
+  photo             String?
+  address1          String?
+  address2          String?
+  phone             String? 
+  gender            Gender
 
   countryId String  @db.Uuid
   country   Country @relation(fields: [countryId], references: [id], onDelete: Cascade, onUpdate: NoAction)
@@ -86,11 +101,11 @@ model Profile {
   userId String @unique @db.Uuid
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   @@id([id])
-  @@unique([passportNumber])
   @@index([phone])
 }
 
@@ -112,17 +127,49 @@ model Family {
   userId String @unique @db.Uuid
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   @@id([id])
-  @@index([fatherPassportNumber])
-  @@index([motherPassportNumber])
+}
+
+model Education {
+  id             String    @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  schoolName     String
+  entryDate      DateTime?
+  graduationDate DateTime?
+
+  userId String @unique @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@id([id])
+}
+
+model TestScores {
+  id         String   @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  type       TestType
+  score      Decimal
+  submitDate DateTime
+  upload     String
+
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@id([id])
 }
 
 model Country {
   id   String @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name String
+  name String @unique
 
   profiles     Profile[]
   universities University[]
@@ -131,13 +178,12 @@ model Country {
   updatedAt DateTime @updatedAt
 
   @@id([id])
-  @@unique([name])
 }
 
 model University {
   id               String   @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   photos           String[]
-  name             String
+  name             String   @unique
   longDescription  String
   shortDescription String
   address          String
@@ -150,11 +196,11 @@ model University {
   applications Application[]
   favorites    FavoriteUniversity[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   @@id([id])
-  @@unique([name])
   @@index([name])
   @@index([countryId])
 }
@@ -169,8 +215,9 @@ model Program {
 
   applications Application[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   @@id([id])
   @@index([name])
@@ -181,35 +228,30 @@ model Admin {
   id        String    @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   firstName String
   lastName  String
-  username  String
+  username  String    @unique
   password  String
   role      AdminRole
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   @@id([id])
-  @@unique([username])
 }
 
 model Application {
-  id String @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-
-  userId String @db.Uuid
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
+  id           String     @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId       String     @db.Uuid
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   universityId String     @db.Uuid
   university   University @relation(fields: [universityId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  programId    String     @db.Uuid
+  program      Program    @relation(fields: [programId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  appStatus    AppStatus
 
-  programId String  @db.Uuid
-  program   Program @relation(fields: [programId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  appStatus     AppStatus
-  paymentStatus PaymentStatus
-  paymentDate   DateTime?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   @@id([id])
   @@index([userId])
@@ -220,35 +262,31 @@ model Application {
 }
 
 model Document {
-  id         String @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  transcript String
-  passport   String
-
-  IELTSScore String?
-  TOPIKScore String?
-
-  motherPassport String?
-  fatherPassport String?
-  IELTS          String?
-  TOPIK          String?
-
-  userId String @db.Uuid
-  User   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@id([id])
-}
-
-model FavoriteUniversity {
-  id String @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id     String       @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  type   DocumentType @default(TRANSCRIPT)
+  upload String       @default("test.jpg")
 
   userId String @db.Uuid
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  deletedAt DateTime?
+
+  @@id([id])
+  @@index([type, userId])
+}
+
+model FavoriteUniversity {
+  id           String     @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId       String     @db.Uuid
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   universityId String     @db.Uuid
   university   University @relation(fields: [universityId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   @@id([id])
 }
