@@ -8,6 +8,7 @@ import { ProfileModule } from './api/profile/profile.module';
 import { ProgramModule } from './api/program/program.module';
 import { UniversityModule } from './api/university/university.module';
 import { UserModule } from './api/user/user.module';
+import { CountryModule } from './api/country/country.module';
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { UserModule } from './api/user/user.module';
     ProfileModule,
     ProgramModule,
     UniversityModule,
-    UserModule
+    UserModule,
+    CountryModule,
   ],
   controllers: [],
   providers: [],

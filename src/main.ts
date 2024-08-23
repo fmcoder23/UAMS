@@ -28,7 +28,6 @@ async function bootstrap() {
     .setTitle('UAMS API')
     .setDescription('University Application Management System')
     .setVersion('1.0')
-    .addTag('My API Documentation')
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, configSwagger);

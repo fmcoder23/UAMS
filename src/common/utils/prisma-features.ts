@@ -62,8 +62,8 @@ interface QueryParams {
     }
   
     paginate() {
-      const page = this.queryParams.page || 1;
-      const limit = this.queryParams.limit || 10;
+      const page = +this.queryParams.page || 1;
+      const limit = +this.queryParams.limit || 10;
       const skip = (page - 1) * limit;
   
       return { skip, take: limit };
@@ -83,8 +83,8 @@ interface QueryParams {
       });
   
       const total = await this.model.count({ where: filter });
-      const totalPages = Math.ceil(total / (pagination.take || 10));
-      const currentPage = pagination.skip / (pagination.take || 10) + 1;
+      const totalPages = Math.ceil(total / (+pagination.take || 10));
+      const currentPage = +pagination.skip / (+pagination.take || 10) + 1;
   
       return {
         result,
