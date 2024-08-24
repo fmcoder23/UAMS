@@ -9,10 +9,12 @@ import { ProgramModule } from './api/program/program.module';
 import { UniversityModule } from './api/university/university.module';
 import { UserModule } from './api/user/user.module';
 import { CountryModule } from './api/country/country.module';
+import { UploadModule } from './api/upload/upload.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    UploadModule,
     AuthModule,
     ApplicationModule,
     DocumentModule,
