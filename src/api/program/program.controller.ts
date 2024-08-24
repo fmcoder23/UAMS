@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
 import { ProgramService } from './program.service';
 import { CreateProgramDto } from './dto/create-program.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
@@ -21,16 +21,16 @@ export class ProgramController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.programService.findOne(+id);
+    return this.programService.findOne(id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateProgramDto: UpdateProgramDto) {
-    return this.programService.update(+id, updateProgramDto);
+    return this.programService.update(id, updateProgramDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.programService.remove(+id);
+    return this.programService.remove(id);
   }
 }
