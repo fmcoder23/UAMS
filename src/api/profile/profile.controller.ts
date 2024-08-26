@@ -29,11 +29,17 @@ export class ProfileController {
     return this.profileService.findAll();
   }
 
+  @Get('me')
+  @Roles(Role.USER)
+  findMe(@Req() req: Request) {
+    const userId = (req.user as JwtPayload).id;
+    return this.profileService.findMe(userId);
+  }
+
   @Get(':id')
-  @Roles(Role.USER, Role.ADMIN, Role.SUPERADMIN)
-  findOne(@Param('id') id: string, @Req() req: Request) {
-    const userId = (req.user as JwtPayload).id; 
-    return this.profileService.findOne(id, userId, (req.user as JwtPayload).role);
+  @Roles(Role.ADMIN, Role.SUPERADMIN)
+  findOne(@Param('id') id: string) {
+    return this.profileService.findOne(id, '', Role.ADMIN);
   }
 
   @Put(':id')

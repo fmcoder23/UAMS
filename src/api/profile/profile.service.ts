@@ -31,6 +31,21 @@ export class ProfileService {
     return formatResponse('Profiles retrieved successfully', profiles);
   }
 
+  async findMe(userId: string) {
+    const profile = await this.prisma.profile.findUnique({
+      where: { userId, deletedAt: null },
+      include: {
+        country: true,
+      },
+    });
+
+    if (!profile) {
+      throw new NotFoundException(`Profile for user ID ${userId} not found`);
+    }
+
+    return formatResponse('Profile retrieved successfully', profile);
+  }
+
   async findOne(id: string, userId: string, userRole: Role) {
     const profile = await this.prisma.profile.findUnique({
       where: { id, deletedAt: null },
