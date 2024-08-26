@@ -1,9 +1,7 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { CountryService } from './country.service';
-import { AuthGuard } from '../auth/auth.guard';
 import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 
-@UseGuards(AuthGuard)
 @ApiBearerAuth()
 @ApiTags('Country')
 @Controller('country')

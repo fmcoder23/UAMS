@@ -17,7 +17,7 @@ export class AuthService {
     const user = await this.prisma.user.create({
       data: { fullname, email, password: hashedPassword },
     });
-    const token = this.jwt.sign({ id: user.id });
+    const token = this.jwt.sign({ id: user.id, role: user.role });
     return { message: "User successfully registered", token, data: user }
   }
 
@@ -30,7 +30,7 @@ export class AuthService {
     if (!isMatch) {
       throw new UnauthorizedException("Incorrect email or password");
     }
-    const token = this.jwt.sign({ id: user.id });
+    const token = this.jwt.sign({ id: user.id, role: user.role });
     return { message: "User successfully logged in", token, data: user }
   }
 }
