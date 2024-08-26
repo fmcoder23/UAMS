@@ -95,7 +95,7 @@ model Profile {
   photo             String?
   address1          String?
   address2          String?
-  phone             String?
+  phone             String
   gender            Gender
 
   countryId String  @db.Uuid
