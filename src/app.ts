@@ -10,6 +10,7 @@ import { UniversityModule } from './api/university/university.module';
 import { UserModule } from './api/user/user.module';
 import { CountryModule } from './api/country/country.module';
 import { UploadModule } from './api/upload/upload.module';
+import { EducationModule } from './api/education/education.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { UploadModule } from './api/upload/upload.module';
     AuthModule,
     ProfileModule,
     FamilyModule,
+    EducationModule,
     ApplicationModule,
     DocumentModule,
     UserModule,
