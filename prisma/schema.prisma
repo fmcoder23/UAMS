@@ -46,6 +46,7 @@ enum TestType {
   IELTS
   TOPIK
   SAT
+  OTHER
 }
 
 enum PaymentMethod {
@@ -86,7 +87,7 @@ model User {
   favoriteUniversities FavoriteUniversity[]
   documents            Document[]
   education            Education?
-  testScores           TestScores[]
+  testScores           TestScore[]
   contracts            Contract[]
   archive              Archive[]
   translations         Translation[]
@@ -170,7 +171,7 @@ model Education {
   @@id([id])
 }
 
-model TestScores {
+model TestScore {
   id         String   @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   type       TestType
   score      Decimal
@@ -180,8 +181,8 @@ model TestScores {
   userId String @db.Uuid
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  visaId String @db.Uuid
-  visa   Visa   @relation(fields: [visaId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  visaId String? @db.Uuid
+  visa   Visa?   @relation(fields: [visaId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -380,7 +381,7 @@ model Visa {
   universityId String     @db.Uuid
   university   University @relation(fields: [universityId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  testScores TestScores[]
+  testScores TestScore[]
 
   acceptanceLetter String
 

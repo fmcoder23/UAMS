@@ -12,6 +12,7 @@ import { CountryModule } from './api/country/country.module';
 import { UploadModule } from './api/upload/upload.module';
 import { EducationModule } from './api/education/education.module';
 import { ContractModule } from './api/contract/contract.module';
+import { TestScoreModule } from './api/test-score/test-score.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ContractModule } from './api/contract/contract.module';
     FamilyModule,
     EducationModule,
     ContractModule,
+    TestScoreModule,
     ApplicationModule,
     DocumentModule,
     UserModule,
