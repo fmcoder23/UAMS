@@ -11,6 +11,7 @@ import { UserModule } from './api/user/user.module';
 import { CountryModule } from './api/country/country.module';
 import { UploadModule } from './api/upload/upload.module';
 import { EducationModule } from './api/education/education.module';
+import { ContractModule } from './api/contract/contract.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { EducationModule } from './api/education/education.module';
     ProfileModule,
     FamilyModule,
     EducationModule,
+    ContractModule,
     ApplicationModule,
     DocumentModule,
     UserModule,
