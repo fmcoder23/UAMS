@@ -15,6 +15,7 @@ import { ContractModule } from './api/contract/contract.module';
 import { TestScoreModule } from './api/test-score/test-score.module';
 import { TranslationModule } from './api/translation/translation.module';
 import { ArchiveModule } from './api/archive/archive.module';
+import { VisaModule } from './api/visa/visa.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { ArchiveModule } from './api/archive/archive.module';
     TranslationModule,
     ApplicationModule,
     DocumentModule,
+    VisaModule,
     UserModule,
     UniversityModule,
     ProgramModule,
