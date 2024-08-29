@@ -7,7 +7,7 @@ import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/role.decorator';
 import { Role } from 'src/common/enums/role.enum';
 
-@ApiTags("University")
+@ApiTags('University')
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
 @Controller('university')

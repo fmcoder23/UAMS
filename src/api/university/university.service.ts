@@ -6,7 +6,7 @@ import { formatResponse } from 'src/common/utils/response.util';
 
 @Injectable()
 export class UniversityService {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(createUniversityDto: CreateUniversityDto) {
     const { name, countryId } = createUniversityDto;
@@ -23,7 +23,7 @@ export class UniversityService {
 
   async findAll() {
     const universities = await this.prisma.university.findMany({
-      where: { deletedAt: null }, 
+      where: { deletedAt: null },
       include: {
         country: true,
         programs: true,

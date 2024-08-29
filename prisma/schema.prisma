@@ -207,6 +207,7 @@ model University {
   id               String   @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   photos           String[]
   name             String   @unique
+  shortName        String
   longDescription  String
   shortDescription String
   address          String
