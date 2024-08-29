@@ -3,11 +3,16 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { hash, compare } from 'bcrypt'
+import { hash, compare } from 'bcrypt';
+import { Role } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly jwt: JwtService, private readonly prisma: PrismaService) { }
+  constructor(
+    private readonly jwt: JwtService,
+    private readonly prisma: PrismaService
+  ) {}
+
   async register({ fullname, email, password }: RegisterDto) {
     const findUser = await this.prisma.user.findUnique({ where: { email } });
     if (findUser) {
@@ -18,7 +23,7 @@ export class AuthService {
       data: { fullname, email, password: hashedPassword },
     });
     const token = this.jwt.sign({ id: user.id, role: user.role });
-    return { message: "User successfully registered", token, data: user }
+    return { message: "User successfully registered", token, data: user };
   }
 
   async login({ email, password }: LoginDto) {
@@ -31,6 +36,19 @@ export class AuthService {
       throw new UnauthorizedException("Incorrect email or password");
     }
     const token = this.jwt.sign({ id: user.id, role: user.role });
-    return { message: "User successfully logged in", token, data: user }
+    return { message: "User successfully logged in", token, data: user };
+  }
+
+  async adminLogin({ email, password }: LoginDto) {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+    if (!user || (user.role !== Role.ADMIN && user.role !== Role.SUPERADMIN)) {
+      throw new UnauthorizedException("Incorrect email or password");
+    }
+    const isMatch = await compare(password, user.password);
+    if (!isMatch) {
+      throw new UnauthorizedException("Incorrect email or password");
+    }
+    const token = this.jwt.sign({ id: user.id, role: user.role });
+    return { message: "Admin successfully logged in", token, data: user };
   }
 }
