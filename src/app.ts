@@ -19,6 +19,7 @@ import { VisaModule } from './api/visa/visa.module';
 import { AboutModule } from './api/about/about.module';
 import { FaqModule } from './api/faq/faq.module';
 import { ContactModule } from './api/contact/contact.module';
+import { PartnerModule } from './api/partner/partner.module';
 
 @Module({
   imports: [
@@ -41,7 +42,8 @@ import { ContactModule } from './api/contact/contact.module';
     CountryModule,
     AboutModule,
     FaqModule,
-    ContactModule
+    ContactModule,
+    PartnerModule,
   ],
 })
 export class AppModule { }
