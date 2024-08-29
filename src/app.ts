@@ -13,6 +13,7 @@ import { UploadModule } from './api/upload/upload.module';
 import { EducationModule } from './api/education/education.module';
 import { ContractModule } from './api/contract/contract.module';
 import { TestScoreModule } from './api/test-score/test-score.module';
+import { TranslationModule } from './api/translation/translation.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { TestScoreModule } from './api/test-score/test-score.module';
     EducationModule,
     ContractModule,
     TestScoreModule,
+    TranslationModule,
     ApplicationModule,
     DocumentModule,
     UserModule,
