@@ -392,3 +392,12 @@ model Visa {
 
   @@id([id])
 }
+
+model About {
+    id String @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+    photo String
+    title String
+    description String
+
+    @@id([id])
+}

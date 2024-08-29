@@ -16,6 +16,7 @@ import { TestScoreModule } from './api/test-score/test-score.module';
 import { TranslationModule } from './api/translation/translation.module';
 import { ArchiveModule } from './api/archive/archive.module';
 import { VisaModule } from './api/visa/visa.module';
+import { AboutModule } from './api/about/about.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { VisaModule } from './api/visa/visa.module';
     ProgramModule,
     ArchiveModule,
     CountryModule,
+    AboutModule
   ],
   controllers: [],
   providers: [],
