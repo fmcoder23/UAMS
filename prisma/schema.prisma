@@ -63,6 +63,11 @@ enum DocumentType {
   PASSPORT
   MOTHER_PASSPORT
   FATHER_PASSPORT
+  DIVORCE_CERTIFICATE
+  DEATH_CERTIFICATE
+  BIRTH_CERTIFICATE
+  ATTESTAT
+  PHOTO
   TRANSCRIPT
 }
 
@@ -278,7 +283,7 @@ model Application {
 
 model Document {
   id     String       @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  type   DocumentType @default(TRANSCRIPT)
+  type   DocumentType @default(PASSPORT)
   upload String       @default("test.jpg")
 
   userId String @db.Uuid
