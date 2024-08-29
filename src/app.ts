@@ -18,6 +18,7 @@ import { ArchiveModule } from './api/archive/archive.module';
 import { VisaModule } from './api/visa/visa.module';
 import { AboutModule } from './api/about/about.module';
 import { FaqModule } from './api/faq/faq.module';
+import { ContactModule } from './api/contact/contact.module';
 
 @Module({
   imports: [
@@ -39,7 +40,8 @@ import { FaqModule } from './api/faq/faq.module';
     ArchiveModule,
     CountryModule,
     AboutModule,
-    FaqModule
+    FaqModule,
+    ContactModule
   ],
 })
 export class AppModule { }

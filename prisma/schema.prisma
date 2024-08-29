@@ -399,8 +399,8 @@ model About {
   title       String
   description String
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@id([id])
 }
@@ -409,9 +409,23 @@ model FAQ {
   id       String @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   question String
   answer   String
-  
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([id])
+}
+
+model Contact {
+  id       String @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title    String
+  address  String
+  mail     String
+  phone    String
+  location Json
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@id([id])
 }
