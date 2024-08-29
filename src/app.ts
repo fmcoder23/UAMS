@@ -14,6 +14,7 @@ import { EducationModule } from './api/education/education.module';
 import { ContractModule } from './api/contract/contract.module';
 import { TestScoreModule } from './api/test-score/test-score.module';
 import { TranslationModule } from './api/translation/translation.module';
+import { ArchiveModule } from './api/archive/archive.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { TranslationModule } from './api/translation/translation.module';
     UserModule,
     UniversityModule,
     ProgramModule,
+    ArchiveModule,
     CountryModule,
   ],
   controllers: [],
