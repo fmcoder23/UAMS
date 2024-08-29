@@ -107,9 +107,11 @@ export class UserService {
       family: true,
       applications: true,
       documents: true,
-      testScores: true,
       education: true,
-      favoriteUniversities: true,
+      testScores: true,
+      contracts: true,
+      translations: true,
+      visa: true,
     };
   }
 }
